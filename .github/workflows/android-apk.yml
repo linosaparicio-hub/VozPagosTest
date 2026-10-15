@@ -24,13 +24,11 @@ jobs:
       - name: Configurar Gradle 8.7
         uses: gradle/actions/setup-gradle@v3
         with:
+          gradle-version: '8.7'
           cache-disabled: false
 
-      - name: Otorgar permisos de ejecución a gradlew
-        run: chmod +x ./gradlew
-
       - name: Compilar paquete APK (assembleDebug)
-        run: ./gradlew assembleDebug --stacktrace
+        run: gradle assembleDebug --stacktrace
 
       - name: Subir APK listo para instalar en tu Android
         uses: actions/upload-artifact@v4
