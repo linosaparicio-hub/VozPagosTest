@@ -20,6 +20,7 @@ class MainActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        title = getString(R.string.firma)   // Título en la barra superior
         ajustes = Ajustes(this)
 
         val swActivo = findViewById<Switch>(R.id.swActivo)
