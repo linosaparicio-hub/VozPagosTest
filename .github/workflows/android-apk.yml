@@ -1,0 +1,46 @@
+name: Compilar APK - VozPagos
+
+on:
+  push:
+    branches: [ "main", "master" ]
+    tags: [ "v*" ]
+  workflow_dispatch:
+
+jobs:
+  build-android-apk:
+    name: Build DEBUG APK (com.vozpagos)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar código fuente del repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Java JDK 17 (Temurin)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Configurar Gradle 8.7
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          cache-disabled: false
+
+      - name: Otorgar permisos de ejecución a gradlew
+        run: chmod +x ./gradlew
+
+      - name: Compilar paquete APK (assembleDebug)
+        run: ./gradlew assembleDebug --stacktrace
+
+      - name: Subir APK listo para instalar en tu Android
+        uses: actions/upload-artifact@v4
+        with:
+          name: vozpagos-debug-v1.0
+          path: app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 30
+      - name: Publicar APK en GitHub Releases (Descarga Directa en el Celular)
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: app/build/outputs/apk/debug/app-debug.apk
+          generate_release_notes: true
